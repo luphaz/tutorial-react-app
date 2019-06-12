@@ -16,6 +16,7 @@ class Board extends React.Component {
       <Square
         value={this.props.squares[i]}
         onClick={() => this.props.onClick(i)}
+        key={i}
       />
     );
   }
@@ -49,7 +50,8 @@ class Game extends React.Component {
         }
       ],
       stepNumber: 0,
-      xIsNext: true
+      xIsNext: true,
+      sortIsAsc: true
     };
   }
 
@@ -104,6 +106,9 @@ class Game extends React.Component {
     const status = winner
       ? "Winner: " + winner
       : "Next player: " + (this.state.xIsNext ? "X" : "O");
+    const sortStatus = this.state.sortIsAsc
+      ? "Toggle sort to desc"
+      : "Toggle sort to asc";
 
     return (
       <div className="game">
@@ -112,7 +117,12 @@ class Game extends React.Component {
         </div>
         <div className="game-info">
           <div>{status}</div>
-          <ol>{moves}</ol>
+          <button
+            onClick={() => this.setState({ sortIsAsc: !this.state.sortIsAsc })}
+          >
+            {sortStatus}
+          </button>
+          <ol>{this.state.sortIsAsc ? moves : moves.reverse()}</ol>
         </div>
       </div>
     );
