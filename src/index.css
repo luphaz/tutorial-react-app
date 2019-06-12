@@ -53,3 +53,7 @@ ul {
 .selected {
   font-weight: bold;
 }
+
+.square-selected {
+  border-width: 2px;
+}

@@ -4,19 +4,22 @@ import "./index.css";
 
 function Square(props) {
   return (
-    <button className="square" onClick={props.onClick}>
+    <button className={props.className} onClick={props.onClick}>
       {props.value}
     </button>
   );
 }
 
 class Board extends React.Component {
-  renderSquare(i) {
+  renderSquare(i, winners) {
     return (
       <Square
         value={this.props.squares[i]}
         onClick={() => this.props.onClick(i)}
         key={i}
+        className={
+          winners.indexOf(i) >= 0 ? "square square-selected" : "square"
+        }
       />
     );
   }
@@ -29,7 +32,10 @@ class Board extends React.Component {
           return (
             <div className="board-row" key={rowIndex}>
               {els.map((_, colIndex) => {
-                return this.renderSquare(colIndex + rowIndex * 3);
+                return this.renderSquare(
+                  colIndex + rowIndex * 3,
+                  this.props.winners
+                );
               })}
             </div>
           );
@@ -104,7 +110,7 @@ class Game extends React.Component {
     });
 
     const status = winner
-      ? "Winner: " + winner
+      ? "Winner: " + winner.icon
       : "Next player: " + (this.state.xIsNext ? "X" : "O");
     const sortStatus = this.state.sortIsAsc
       ? "Toggle sort to desc"
@@ -113,7 +119,11 @@ class Game extends React.Component {
     return (
       <div className="game">
         <div className="game-board">
-          <Board squares={current.squares} onClick={i => this.handleClick(i)} />
+          <Board
+            squares={current.squares}
+            winners={winner ? winner.lines : []}
+            onClick={i => this.handleClick(i)}
+          />
         </div>
         <div className="game-info">
           <div>{status}</div>
@@ -147,7 +157,7 @@ function calculateWinner(squares) {
   for (let i = 0; i < lines.length; i++) {
     const [a, b, c] = lines[i];
     if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-      return squares[a];
+      return { icon: squares[a], lines: [a, b, c] };
     }
   }
   return null;
