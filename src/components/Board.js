@@ -15,13 +15,15 @@ function Board(props) {
     );
   }
 
-  const els = Array(3).fill(null);
+  const rows = [...Array(3)];
+  const cols = rows;
+
   return (
     <div>
-      {els.map((_, rowIndex) => {
+      {rows.map((_, rowIndex) => {
         return (
           <div className="board-row" key={rowIndex}>
-            {els.map((_, colIndex) => {
+            {cols.map((_, colIndex) => {
               return renderSquare(colIndex + rowIndex * 3, props.winners);
             })}
           </div>
